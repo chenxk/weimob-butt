@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-autowire="byName"
+       default-init-method="init" default-destroy-method="depose"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="appInfo" class="com.weimob.authorization.center.po.AppInfo">
+        <property name="appId" value="${appId}"/>
+        <property name="appSecret" value="${appSecret}"/>
+        <property name="wechatAuthorizeUri" value="${wechatAuthorizeUri}"/>
+        <property name="oauthAccessTokenUri" value="${oauthAccessTokenUri}"/>
+        <property name="redirectHomeUri" value="${redirectHomeUri}"/>
+        <property name="redirectRegisterUri" value="${redirectRegisterUri}"/>
+        <property name="appAccessTokenUri" value="${appAccessTokenUri}"/>
+        <property name="templateUri" value="${templateUri}"/>
+        <property name="sendMessageUri" value="${sendMessageUri}"/>
+    </bean>
+
+    <bean id="accessTokenTools" class="com.weimob.authorization.center.accesstoken.AccessTokenTools">
+    </bean>
+
+</beans>

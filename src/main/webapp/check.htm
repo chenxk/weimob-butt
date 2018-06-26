@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>wechat auth</title>
+<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		getWechatCert();
+	});
+
+	function getWechatCert() {
+		$.ajax({
+			url : "authCenter/getWeimobCert.json",
+			success : function(result) {
+				//alert("flag:" + result.flag);
+				if (result.flag == true) {
+					checkOpenId(result);
+				} else {
+					alert("wechat auth err");
+					//$("#openId").val(result.openId);
+				}
+			}
+		});
+	}
+
+	function checkOpenId(result) {
+		var wechatAuthorizeUri = "https://dopen.weimob.com/fuwu/b/oauth2/authorize?" +
+			"enter=wm&view=pc&response_type=code&scope=default&";
+		//alert($("#txtKeyword").val());
+		var redirectUri = encodeURIComponent("http://203.195.230.242:8080/weimob/authCenter/oauthCallBack.json");
+		var fullUri = wechatAuthorizeUri
+				+ "client_id="
+				+ result.appId
+				+ "&redirect_uri="
+				+ redirectUri
+				+ "&state=default";
+		window.location.href = fullUri;
+	}
+</script>
+
+</head>
+<body>
+	<div style="text-align: center;">
+		<img alt="" src="css/loading.gif" style="width: 100px;height: 100px;" />
+	</div>
+
+</body>
+</html>

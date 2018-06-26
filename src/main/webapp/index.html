@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>测试发送通知</title>
+<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		 var userId = getQueryString("userId");
+		//alert("userId:" + userId);
+		
+		if(userId == null){
+			userId = "";
+		} 
+		
+		$.ajax({url:"authCenter/getOpenId.json?userId=" + userId,success:function(result){
+			//alert("flag:" + result.flag);
+			if(result.openId == '' || result.openId == null){
+				checkOpenId(result);
+				//$("#openId").val("oOVOQ1aEvVWbhJcLplsTZP-0QVRg");
+			}else{
+				//alert("openId:" + result.openId);
+				$("#openId").val(result.openId);
+			}
+	    }});
+		
+		Date.prototype.Format = function(fmt)   
+		{ //author: meizz   
+		  var o = {   
+		    "M+" : this.getMonth()+1,                 //月份   
+		    "d+" : this.getDate(),                    //日   
+		    "h+" : this.getHours(),                   //小时   
+		    "m+" : this.getMinutes(),                 //分   
+		    "s+" : this.getSeconds(),                 //秒   
+		    "q+" : Math.floor((this.getMonth()+3)/3), //季度   
+		    "S"  : this.getMilliseconds()             //毫秒   
+		  };   
+		  if(/(y+)/.test(fmt))   
+		    fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));   
+		  for(var k in o)   
+		    if(new RegExp("("+ k +")").test(fmt))   
+		  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
+		  return fmt;   
+		} 
+	});
+	
+	function getWechatCert(){
+		$.ajax({url:"authCenter/getWechatCert.json",success:function(result){
+			//alert("flag:" + result.flag);
+			if(result.flag == true){
+				checkOpenId(result);
+				//$("#openId").val("oOVOQ1aEvVWbhJcLplsTZP-0QVRg");
+			}else{
+				//alert("openId:" + result.openId);
+				//$("#openId").val(result.openId);
+			}
+	    }});
+	}
+	
+
+	/**
+	获取url参数
+	**/
+	function getQueryString(name)
+	{
+	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);
+	     if(r != null){
+	    	 return  unescape(r[2]); 
+	     }
+	     return null;
+	}
+	
+
+	
+	function checkOpenId(result){
+		var wechatAuthorizeUri = "https://open.weixin.qq.com/connect/oauth2/authorize?";
+		//alert($("#txtKeyword").val());
+		var redirectUri = encodeURIComponent("http://service.yuezunvip.com/wechatauth/authCenter/oauthCallBack.json");
+		var fullUri = wechatAuthorizeUri + "appid=" + result.appId + "&redirect_uri=" + redirectUri + "&response_type=code&scope=snsapi_base&state=" + result.userId + "#wechat_redirect";
+		//var obj = new Object();
+		
+		window.location.href = fullUri;
+		/* 
+		$.ajax({
+			url:wechatAuthorizeUri,
+			//dataType : "json",
+			type : 'get',
+			//contentType: 'application/json; charset=utf-8',
+			//data :JSON.stringify(obj),
+			success:function(result){
+	        	//$("#div1").html(result);
+	        	alert(result);
+	    	}
+		}); */
+	}
+	
+	/* function authorize(result){
+	
+		var curUrl = encodeURI(window.location);
+		
+		var wechatAuthorizeUri = "https://open.weixin.qq.com/connect/oauth2/authorize?";
+		//alert($("#txtKeyword").val());
+		var fullUri = wechatAuthorizeUri + "appid=" + result.appId + "&redirect_uri=" + result.redirectUri + "&response_type=code&scope=snsapi_base&state=" + result.userId + "#wechat_redirect";
+		var obj = new Object();
+		
+		//window.location.href = fullUri;
+		
+		$.ajax({
+			url:"authCenter/oauth2Wechat.json?userId=" + result.userId,
+			//dataType : "json",
+			type : 'post',
+			//contentType: 'application/json; charset=utf-8',
+			//data :JSON.stringify(obj),
+			success:function(result){
+	        	//$("#div1").html(result);
+	        	alert(result);
+	    	}
+		});
+	} */
+	
+	
+	function pushRechargeMsg(){
+		var obj = new Object();
+		obj.openId = $("#openId").val();
+		obj.firstValue = "您好，您已成功进行充值";
+		obj.color = "#173177";
+		obj.remark = "备注：如有疑问，请致电13912345678联系我们。";
+		obj.tempId = "-UJkDs-KWpWk7vJt5V0H4SR3n6lz2BG-5OEg_d4yUug";//"lzaGVRqby74yex7jMUb-WKOvdJGkAdUOHe7kTVXtKJE";
+		obj.url = "http://www.baidu.com";
+		
+		obj.accountType = "手机号";
+		obj.accountTypeValue = "15834567890";
+		obj.amount = "155元";
+		obj.result = "充值成功";
+		
+		jsonParam = JSON.stringify(obj);
+		$.ajax({
+			url:"pushMsg/pushRechargeMsg.json",
+			dataType : "json",
+			type : 'post',
+			contentType: 'application/json; charset=utf-8',
+			data :JSON.stringify(obj),
+			success:function(result){
+	        	//$("#div1").html(result);
+	        	alert(result);
+	    	}
+		});
+	}
+	
+	function pushConsumeMsg(){
+		var obj = new Object();
+		obj.openId = $("#openId").val();
+		obj.firstValue = "您好，您已消费成功";
+		obj.color = "#173177";
+		obj.remark = "期待您再次光临!";
+		obj.tempId = "t_Tql0OZglfZzr4VLxV6gcXKFqWIbYN7zb9lgxxDPDs";
+		obj.url = "http://www.baidu.com";
+		
+		obj.shopName = "沃尔玛";
+		obj.phone = "15834567890";
+		obj.amount = "155元";
+		
+		jsonParam = JSON.stringify(obj);
+		
+		$.ajax({
+			url:"pushMsg/pushConsumeMsg.json",
+			dataType : "json",
+			type : 'post',
+			contentType: 'application/json; charset=utf-8',
+			data :JSON.stringify(obj),
+			success:function(result){
+	        	//$("#div1").html(result);
+	        	alert(result);
+	    	}
+		});
+	}
+	
+	//-UJkDs-KWpWk7vJt5V0H4SR3n6lz2BG-5OEg_d4yUug
+	
+	function pushRealTimeMsg(tradeType){
+		var obj = new Object();
+		obj.openId = $("#openId").val();
+		obj.firstValue = "您好，" + tradeType + "成功";
+		obj.color = "#173177";
+		obj.remark = "期待您再次光临!";
+		obj.tempId = "-UJkDs-KWpWk7vJt5V0H4SR3n6lz2BG-5OEg_d4yUug";
+		obj.url = "http://www.baidu.com";
+		
+		obj.tradeDateTime = new Date().Format("yyyy-MM-dd hh:mm:ss");//"2017-04-23 12:00:00";
+		obj.tradeType = "" + tradeType;
+		obj.curAmount = "155元";
+		
+		jsonParam = JSON.stringify(obj);
+		
+		$.ajax({
+			url:"pushMsg/pushRealTimeMsg.json",
+			dataType : "json",
+			type : 'post',
+			contentType: 'application/json; charset=utf-8',
+			data :JSON.stringify(obj),
+			success:function(result){
+	        	//$("#div1").html(result);
+	        	alert(result);
+	    	}
+		});
+	}
+</script>
+
+</head>
+<body>
+	 <br> <br>
+	 openId:<input type="text" id="openId" style="width: 300px;height: 50px;font-size: 10pt;" readonly="readonly">
+	 
+	 <br> <br><br> <br>
+	 <input type="button" style="width: 200px;height: 80px;" onclick="pushRealTimeMsg('充值')" value="测试发充值通知">
+	 
+	 <br> <br><br> <br>
+	 <input type="button" style="width: 200px;height: 80px;" onclick="pushRealTimeMsg('消费')" value="测试发消费通知">
+	 
+	 
+	 <br> <br><br> <br>
+	 <input type="button" style="width: 200px;height: 80px;" onclick="pushRealTimeMsg('赠送')" value="测试发赠送通知">
+</body>
+</html>

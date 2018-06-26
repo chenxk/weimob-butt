@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	default-autowire="byName" default-init-method="init"
+	default-destroy-method="depose"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<bean id="swagger2Manager" class="com.weimob.authorization.center.manager.Swagger2Manager">
+		<property name="apiTitle" value="${swagger2.apiTitle}" />
+		<property name="apiDescription" value="${swagger2.apiDescription}" />
+		<property name="apiVersion" value="${swagger2.apiVersion}" />
+		<property name="baseScanPackage" value="${swagger2.baseScanPackage}" />
+	</bean>
+
+    <mvc:resources location="classpath:/swagger/" mapping="swagger-ui.html" />
+	<mvc:resources location="classpath:/META-INF/resources/webjars/" mapping="/webjars/**" />
+</beans>

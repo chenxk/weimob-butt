@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>模拟登录</title>
+<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		
+		 var openId = getQueryString("openId");
+		 
+		 $("#openId").val(openId);
+		//alert("userId:" + userId);
+		
+	});
+	
+	
+	/**
+	获取url参数
+	**/
+	function getQueryString(name)
+	{
+	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);
+	     if(r != null){
+	    	 return  unescape(r[2]); 
+	     }
+	     return null;
+	}
+	
+	
+	function testRegis(){
+		var userId = $("#userId").val();
+		var openId = $("#openId").val();
+		
+		$.ajax({url:"authCenter/saveUserOpenId.json?userId=" + userId + "&openId=" + openId,
+				success:function(result){
+			//alert("flag:" + result.flag);
+					window.location.href = "index.html?userId=" + $("#userId").val();
+	    }});
+		
+	}
+	
+	
+</script>
+
+</head>
+<body>
+<br> <br>
+	在访问 <a href="http://service.yuezunvip.com/wechatauth/check.htm">
+	http://service.yuezunvip.com/wechatauth/check.htm  检查openId</a> 的时候，如果得到当前微信用户的
+	openId已经记录，取得对应的userId并调整至VIP首页，否则带着openId进入H5登录页面。登录成功后，记录userId和openId的关系。
+	保存userId和openId的接口如下:
+	http://service.yuezunvip.com/wechatauth/saveUserOpenId.json?userId=xxx&openId=xxx
+	 <br> <br>
+	 openId:<input type="text" id="openId" style="width: 300px;height: 50px;font-size: 10pt;" readonly="readonly">
+	  <br> <br> <br> <br>
+	  userId:<input type="text" id="userId" style="width: 300px;height: 50px;font-size: 10pt;">
+	 <br> <br><br> <br>
+	 <input type="button" style="width: 200px;height: 80px;" onclick="testRegis()" value="模拟注册保存userId和openId">
+	 
+</body>
+</html>
